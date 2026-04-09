@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin | SHOEFINITY</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+body { background:#000; color:white; padding-bottom:60px; }
+.container { width:90%; max-width:650px; margin:40px auto; }
+h1 { text-align:center; margin-bottom:10px; font-family:'Montserrat',sans-serif; font-size:24px; color:white; }
+.subtitle { text-align:center; color:#666; font-size:13px; margin-bottom:30px; }
+.tabs { display:flex; gap:8px; margin-bottom:25px; }
+.tab-btn { flex:1; padding:11px 6px; border:none; border-radius:8px; background:rgba(255,255,255,0.05); color:#aaa; font-weight:600; cursor:pointer; font-size:12px; transition:0.2s; }
+.tab-btn.active { background:#00ff88; color:#000; }
+.panel { display:none; }
+.panel.active { display:block; }
+form { display:flex; flex-direction:column; gap:15px; background:rgba(255,255,255,0.04); padding:25px; border-radius:12px; border:1px solid rgba(255,255,255,0.08); }
+label { font-size:13px; color:#888; margin-bottom:-8px; }
+input[type="text"], input[type="number"], select, textarea { padding:12px; border:1px solid rgba(255,255,255,0.12); border-radius:8px; background:#111; color:white; outline:none; font-size:14px; font-family:'Poppins',sans-serif; }
+textarea { resize:vertical; min-height:90px; }
+input[type="text"]::placeholder, input[type="number"]::placeholder, textarea::placeholder { color:#555; }
+input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:focus { border-color:#00ff88; }
+select option { background:#111; color:white; }
+.size-field { display:flex; flex-direction:column; gap:15px; }
+.size-field.hidden { display:none; }
+.subcat-field { display:flex; flex-direction:column; gap:15px; }
+.subcat-field.hidden { display:none; }
+.add-btn { padding:14px; border:none; border-radius:8px; background:#00ff88; color:#000; font-weight:700; cursor:pointer; font-size:15px; margin-top:5px; }
+.add-btn:hover { background:#00e077; }
+.optional-tag { font-size:11px; color:#555; margin-left:6px; }
+.img-upload-group { display:flex; flex-direction:column; gap:8px; }
+.img-upload-row { display:flex; gap:8px; align-items:center; }
+.img-upload-row input[type="text"] { flex:1; font-size:12px; padding:10px 12px; color:#aaa; }
+.upload-btn { display:flex; align-items:center; justify-content:center; gap:6px; padding:10px 14px; background:#1a1a1a; border:1px solid rgba(255,255,255,0.15); border-radius:8px; color:white; font-size:12px; font-weight:600; cursor:pointer; white-space:nowrap; transition:0.2s; font-family:'Poppins',sans-serif; flex-shrink:0; }
+.upload-btn:hover { border-color:#00ff88; color:#00ff88; }
+.upload-btn.uploading { color:#aaa; pointer-events:none; }
+.img-preview { width:50px; height:50px; object-fit:cover; border-radius:6px; border:1px solid rgba(255,255,255,0.1); display:none; flex-shrink:0; }
+.img-preview.visible { display:block; }
+input[type="file"] { display:none; }
+.filter-bar { display:flex; gap:10px; margin-bottom:20px; }
+.filter-bar select { flex:1; padding:10px; border-radius:8px; background:#111; color:white; border:1px solid rgba(255,255,255,0.12); }
+.filter-bar input { flex:2; padding:10px; border-radius:8px; background:#111; color:white; border:1px solid rgba(255,255,255,0.12); }
+.filter-bar input::placeholder { color:#555; }
+.product-list { display:flex; flex-direction:column; gap:12px; }
+.product-item { display:flex; align-items:center; gap:15px; background:rgba(255,255,255,0.03); border-radius:12px; padding:12px; border:1px solid rgba(255,255,255,0.07); }
+.product-item img { width:65px; height:65px; object-fit:cover; border-radius:8px; flex-shrink:0; background:#111; }
+.product-item-info { flex:1; min-width:0; }
+.product-item-info h3 { font-size:14px; font-weight:600; margin-bottom:3px; color:white; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.product-item-info p { font-size:12px; color:#666; }
+.product-item-info .prod-id { font-size:10px; color:#444; margin-top:2px; font-family:monospace; }
+.product-item-info span { font-size:13px; color:#00ff88; font-weight:600; }
+.item-actions { display:flex; flex-direction:column; gap:8px; flex-shrink:0; }
+.edit-btn { background:rgba(0,255,136,0.08); border:1px solid rgba(0,255,136,0.3); color:#00ff88; padding:8px 14px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600; transition:0.2s; white-space:nowrap; }
+.edit-btn:hover { background:rgba(0,255,136,0.2); }
+.remove-btn { background:rgba(255,60,60,0.08); border:1px solid rgba(255,60,60,0.3); color:#ff6b6b; padding:8px 14px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600; transition:0.2s; white-space:nowrap; }
+.remove-btn:hover { background:rgba(255,60,60,0.2); }
+.copy-id-btn { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:#aaa; padding:8px 14px; border-radius:8px; cursor:pointer; font-size:12px; font-weight:600; transition:0.2s; white-space:nowrap; }
+.copy-id-btn:hover { border-color:#00ff88; color:#00ff88; }
+.hero-slides-panel { display:flex; flex-direction:column; gap:20px; }
+.slide-item { background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:20px; display:flex; flex-direction:column; gap:12px; }
+.slide-item h3 { font-size:14px; font-weight:600; color:white; }
+.slide-preview-large { width:100%; height:160px; object-fit:cover; border-radius:10px; background:#1a1a1a; display:block; }
+.slide-preview-large.hidden { display:none; }
+.slide-link-field { display:flex; flex-direction:column; gap:6px; }
+.slide-link-field label { font-size:12px; color:#666; }
+.slide-link-field input { padding:10px 12px; border:1px solid rgba(255,255,255,0.1); border-radius:8px; background:#0d0d0d; color:white; font-size:13px; font-family:monospace; outline:none; }
+.slide-link-field input:focus { border-color:#00ff88; }
+.slide-link-field input::placeholder { color:#444; font-family:'Poppins',sans-serif; }
+.slide-link-hint { font-size:11px; color:#444; }
+.save-slides-btn { width:100%; padding:14px; border:none; border-radius:8px; background:#00ff88; color:#000; font-weight:700; cursor:pointer; font-size:15px; margin-top:10px; }
+.save-slides-btn:hover { background:#00e077; }
+.slides-status { text-align:center; font-size:13px; color:#666; margin-top:10px; }
+.edit-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:3000; display:none; overflow-y:auto; padding:30px 0; }
+.edit-overlay.active { display:block; }
+.edit-box { background:#111; width:90%; max-width:550px; margin:auto; border-radius:16px; padding:30px; border:1px solid rgba(255,255,255,0.1); position:relative; }
+.edit-box h2 { font-family:'Montserrat',sans-serif; margin-bottom:20px; font-size:18px; color:white; }
+.edit-close { position:absolute; top:15px; right:20px; font-size:26px; cursor:pointer; color:#aaa; background:none; border:none; }
+.edit-close:hover { color:white; }
+.edit-box form { background:transparent; padding:0; border:none; }
+.save-btn { padding:14px; border:none; border-radius:8px; background:#00ff88; color:#000; font-weight:700; cursor:pointer; font-size:15px; width:100%; margin-top:5px; }
+.save-btn:hover { background:#00e077; }
+.loading { text-align:center; color:#666; padding:30px; font-size:14px; }
+.empty { text-align:center; color:#444; padding:30px; font-size:14px; }
+.pass-gate { position:fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:9999; display:flex; align-items:center; justify-content:center; }
+.pass-box { background:#111; border:1px solid rgba(255,255,255,0.1); border-radius:20px; padding:45px 30px; width:90%; max-width:360px; text-align:center; }
+.pass-box i { font-size:40px; color:#00ff88; margin-bottom:18px; display:block; }
+.pass-box h2 { font-family:'Montserrat',sans-serif; font-size:22px; margin-bottom:8px; color:white; }
+.pass-box p { font-size:13px; color:#666; margin-bottom:25px; }
+.pass-input { width:100%; padding:14px 15px; border-radius:10px; background:#1a1a1a; border:1px solid rgba(255,255,255,0.1); color:white; font-size:16px; outline:none; font-family:'Poppins',sans-serif; text-align:center; letter-spacing:3px; margin-bottom:10px; transition:0.2s; }
+.pass-input::placeholder { color:#444; letter-spacing:1px; }
+.pass-input:focus { border-color:#00ff88; }
+.pass-error { color:#ff6b6b; font-size:12px; margin-bottom:12px; display:none; min-height:18px; }
+.pass-unlock-btn { width:100%; padding:14px; border:none; border-radius:10px; background:#00ff88; color:#000; font-weight:700; font-size:15px; cursor:pointer; font-family:'Poppins',sans-serif; transition:0.2s; text-transform:uppercase; letter-spacing:1px; }
+.pass-unlock-btn:hover { background:#00e077; }
+.pass-back { display:block; margin-top:18px; font-size:12px; color:#555; text-decoration:none; transition:0.2s; }
+.pass-back:hover { color:#aaa; }
+.session-timer { position:fixed; bottom:20px; right:20px; background:rgba(0,0,0,0.8); border:1px solid rgba(255,255,255,0.1); border-radius:20px; padding:6px 14px; font-size:12px; color:#aaa; z-index:1000; display:none; }
+.session-timer span { color:#00ff88; font-weight:600; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-8px)} 40%,80%{transform:translateX(8px)} }
+.shake { animation:shake 0.4s ease; }
+</style>
+</head>
+<body>
+
+<div class="pass-gate" id="passGate">
+  <div class="pass-box">
+    <i class="fas fa-lock"></i>
+    <h2>Admin Access</h2>
+    <p>Enter your password to manage the store</p>
+    <input type="password" class="pass-input" id="adminPassInput" placeholder="••••••••"
+      onkeydown="if(event.key==='Enter') checkPassword()" autocomplete="off">
+    <p class="pass-error" id="passError">❌ Incorrect password. Try again.</p>
+    <button class="pass-unlock-btn" onclick="checkPassword()">
+      <i class="fas fa-unlock" style="margin-right:8px;"></i>Unlock
+    </button>
+    <a href="index.html" class="pass-back">← Back to Store</a>
+  </div>
+</div>
+
+<div class="session-timer" id="sessionTimer">
+  🔒 Session expires in <span id="timerCount">10:00</span>
+</div>
+
+<div class="container">
+  <h1>SHOEFINITY Admin</h1>
+  <p class="subtitle">Manage your product catalogue</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('add')">➕ Add</button>
+    <button class="tab-btn" onclick="switchTab('manage')">📦 Manage</button>
+    <button class="tab-btn" onclick="switchTab('hero')">🖼️ Hero Slides</button>
+  </div>
+
+  <!-- ADD PANEL -->
+  <div class="panel active" id="panel-add">
+    <form id="addProductForm">
+      <label>Product Name</label>
+      <input type="text" id="prodName" placeholder="e.g. Nike Air Max 90" required>
+
+      <label>Offer Price / Selling Price (Rs.) <span class="optional-tag">— shown as main price</span></label>
+      <input type="number" id="prodPrice" placeholder="e.g. 3199" required>
+
+      <label>Original Price (Rs.) <span class="optional-tag">optional — shows strikethrough</span></label>
+      <input type="number" id="prodOriginalPrice" placeholder="e.g. 4299">
+
+      <label>Description <span class="optional-tag">optional</span></label>
+      <textarea id="prodDescription" placeholder="e.g. Premium leather upper, cushioned sole..."></textarea>
+
+      <label>Category</label>
+      <select id="prodCategory" required onchange="handleCategoryChange('prodCategory','addSizeField','prodSizes','addSubcatField','prodSubcategory')">
+        <option value="">Select Category</option>
+        <option value="Men">Men</option>
+        <option value="Women">Women</option>
+        <option value="Unisex">Unisex</option>
+        <option value="Accessories">Accessories</option>
+      </select>
+
+      <div class="subcat-field hidden" id="addSubcatField">
+        <label>Subcategory</label>
+        <select id="prodSubcategory">
+          <option value="Shoe Items">Shoe Items</option>
+          <option value="Glasses">Glasses</option>
+        </select>
+      </div>
+
+      <div class="size-field" id="addSizeField">
+        <label>Sizes (comma-separated)</label>
+        <input type="text" id="prodSizes" placeholder="e.g. 7,8,9,10,11">
+      </div>
+
+      <label>Main Image</label>
+      <div class="img-upload-group">
+        <div class="img-upload-row">
+          <input type="text" id="prodImage" placeholder="URL auto-fills after upload..." required>
+          <button type="button" class="upload-btn" onclick="triggerUpload('fileProdMain','prodImage','previewProdMain')"><i class="fas fa-camera"></i> Choose</button>
+          <img id="previewProdMain" class="img-preview" src="" alt="">
+        </div>
+        <input type="file" id="fileProdMain" accept="image/*" onchange="uploadToCloudinary(this,'prodImage','previewProdMain')">
+      </div>
+      <label>Gallery Image 1</label>
+      <div class="img-upload-group">
+        <div class="img-upload-row">
+          <input type="text" id="prodImage1" placeholder="URL auto-fills after upload...">
+          <button type="button" class="upload-btn" onclick="triggerUpload('fileProd1','prodImage1','previewProd1')"><i class="fas fa-camera"></i> Choose</button>
+          <img id="previewProd1" class="img-preview" src="" alt="">
+        </div>
+        <input type="file" id="fileProd1" accept="image/*" onchange="uploadToCloudinary(this,'prodImage1','previewProd1')">
+      </div>
+      <label>Gallery Image 2</label>
+      <div class="img-upload-group">
+        <div class="img-upload-row">
+          <input type="text" id="prodImage2" placeholder="URL auto-fills after upload...">
+          <button type="button" class="upload-btn" onclick="triggerUpload('fileProd2','prodImage2','previewProd2')"><i class="fas fa-camera"></i> Choose</button>
+          <img id="previewProd2" class="img-preview" src="" alt="">
+        </div>
+        <input type="file" id="fileProd2" accept="image/*" onchange="uploadToCloudinary(this,'prodImage2','previewProd2')">
+      </div>
+      <label>Gallery Image 3</label>
+      <div class="img-upload-group">
+        <div class="img-upload-row">
+          <input type="text" id="prodImage3" placeholder="URL auto-fills after upload...">
+          <button type="button" class="upload-btn" onclick="triggerUpload('fileProd3','prodImage3','previewProd3')"><i class="fas fa-camera"></i> Choose</button>
+          <img id="previewProd3" class="img-preview" src="" alt="">
+        </div>
+        <input type="file" id="fileProd3" accept="image/*" onchange="uploadToCloudinary(this,'prodImage3','previewProd3')">
+      </div>
+      <label>Gallery Image 4</label>
+      <div class="img-upload-group">
+        <div class="img-upload-row">
+          <input type="text" id="prodImage4" placeholder="URL auto-fills after upload...">
+          <button type="button" class="upload-btn" onclick="triggerUpload('fileProd4','prodImage4','previewProd4')"><i class="fas fa-camera"></i> Choose</button>
+          <img id="previewProd4" class="img-preview" src="" alt="">
+        </div>
+        <input type="file" id="fileProd4" accept="image/*" onchange="uploadToCloudinary(this,'prodImage4','previewProd4')">
+      </div>
+      <button type="submit" class="add-btn">✅ Add Product</button>
+    </form>
+  </div>
+
+  <!-- MANAGE PANEL -->
+  <div class="panel" id="panel-manage">
+    <div class="filter-bar">
+      <select id="filterCategory" onchange="filterProducts()">
+        <option value="">All Categories</option>
+        <option value="Men">Men</option>
+        <option value="Women">Women</option>
+        <option value="Unisex">Unisex</option>
+        <option value="Accessories">Accessories</option>
+      </select>
+      <input type="text" id="filterSearch" placeholder="Search by name..." oninput="filterProducts()">
+    </div>
+    <div id="productList" class="product-list">
+      <p class="loading">Loading products...</p>
+    </div>
+  </div>
+
+  <!-- HERO SLIDES PANEL -->
+  <div class="panel" id="panel-hero">
+    <div class="hero-slides-panel">
+      <div class="slide-item">
+        <h3>🖼️ Slide 1</h3>
+        <img id="heroPreview1" class="slide-preview-large hidden" src="" alt="">
+        <div class="img-upload-group">
+          <div class="img-upload-row">
+            <input type="text" id="heroUrl1" placeholder="URL auto-fills after upload...">
+            <button type="button" class="upload-btn" onclick="triggerUpload('fileHero1','heroUrl1','heroPreview1')"><i class="fas fa-camera"></i> Choose</button>
+          </div>
+          <input type="file" id="fileHero1" accept="image/*" onchange="uploadHeroImg(this,'heroUrl1','heroPreview1')">
+        </div>
+        <div class="slide-link-field">
+          <label>Product ID <span class="optional-tag">optional — type "sale" to link to sale page</span></label>
+          <input type="text" id="heroLink1" placeholder='Paste product ID or type "sale"'>
+          <span class="slide-link-hint">💡 Find product ID in Manage tab — tap 📋 Copy ID</span>
+        </div>
+      </div>
+      <div class="slide-item">
+        <h3>🖼️ Slide 2</h3>
+        <img id="heroPreview2" class="slide-preview-large hidden" src="" alt="">
+        <div class="img-upload-group">
+          <div class="img-upload-row">
+            <input type="text" id="heroUrl2" placeholder="URL auto-fills after upload...">
+            <button type="button" class="upload-btn" onclick="triggerUpload('fileHero2','heroUrl2','heroPreview2')"><i class="fas fa-camera"></i> Choose</button>
+          </div>
+          <input type="file" id="fileHero2" accept="image/*" onchange="uploadHeroImg(this,'heroUrl2','heroPreview2')">
+        </div>
+        <div class="slide-link-field">
+          <label>Product ID <span class="optional-tag">optional — type "sale" to link to sale page</span></label>
+          <input type="text" id="heroLink2" placeholder='Paste product ID or type "sale"'>
+          <span class="slide-link-hint">💡 Find product ID in Manage tab — tap 📋 Copy ID</span>
+        </div>
+      </div>
+      <div class="slide-item">
+        <h3>🖼️ Slide 3</h3>
+        <img id="heroPreview3" class="slide-preview-large hidden" src="" alt="">
+        <div class="img-upload-group">
+          <div class="img-upload-row">
+            <input type="text" id="heroUrl3" placeholder="URL auto-fills after upload...">
+            <button type="button" class="upload-btn" onclick="triggerUpload('fileHero3','heroUrl3','heroPreview3')"><i class="fas fa-camera"></i> Choose</button>
+          </div>
+          <input type="file" id="fileHero3" accept="image/*" onchange="uploadHeroImg(this,'heroUrl3','heroPreview3')">
+        </div>
+        <div class="slide-link-field">
+          <label>Product ID <span class="optional-tag">optional — type "sale" to link to sale page</span></label>
+          <input type="text" id="heroLink3" placeholder='Paste product ID or type "sale"'>
+          <span class="slide-link-hint">💡 Find product ID in Manage tab — tap 📋 Copy ID</span>
+        </div>
+      </div>
+      <button class="save-slides-btn" onclick="saveHeroSlides()">💾 Save Hero Slides</button>
+      <p class="slides-status" id="slidesStatus"></p>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="edit-overlay" id="editOverlay">
+  <div class="edit-box">
+    <button class="edit-close" onclick="closeEdit()">&#10005;</button>
+    <h2>✏️ Edit Product</h2>
+    <form id="editProductForm">
+      <label>Product Name</label>
+      <input type="text" id="editName" placeholder="Product Name" required>
+
+      <label>Offer Price / Selling Price (Rs.) <span class="optional-tag">— shown as main price</span></label>
+      <input type="number" id="editPrice" placeholder="Price" required>
+
+      <label>Original Price (Rs.) <span class="optional-tag">optional — shows strikethrough</span></label>
+      <input type="number" id="editOriginalPrice" placeholder="e.g. 4299">
+
+      <label>Description <span class="optional-tag">optional</span></label>
+      <textarea id="editDescription" placeholder="e.g. Premium leather upper..."></textarea>
+
+      <label>Category</label>
+      <select id="editCategory" required onchange="handleCategoryChange('editCategory','editSizeField','editSizes','editSubcatField','editSubcategory')">
+        <option value="Men">Men</option>
+        <option value="Women">Women</option>
+        <option value="Unisex">Unisex</option>
+        <option value="Accessories">Accessories</option>
+      </select>
+
+      <div class="subcat-field hidden" id="editSubcatField">
+        <label>Subcategory</label>
+        <select id="editSubcategory">
+          <option value="Shoe Items">Shoe Items</option>
+          <option value="Glasses">Glasses</option>
+        </select>
+      </div>
+
+      <div class="size-field" id="editSizeField">
+        <label>Sizes (comma-separated)</label>
+        <input type="text" id="editSizes" placeholder="e.g. 7,8,9,10,11">
+      </div>
+
+      <label>Main Image</label>
+      <div class="img-upload-group">
+        <div class="img-upload-row">
+          <input type="text" id="editImage" placeholder="https://..." required>
+          <button type="button" class="upload-btn" onclick="triggerUpload('fileEditMain','editImage','previewEditMain')"><i class="fas fa-camera"></i> Choose</button>
+          <img id="previewEditMain" class="img-preview" src="" alt="">
+        </div>
+        <input type="file" id="fileEditMain" accept="image/*" onchange="uploadToCloudinary(this,'editImage','previewEditMain')">
+      </div>
+      <label>Gallery Image 1</label>
+      <div class="img-upload-group">
+        <div class="img-upload-row">
+          <input type="text" id="editImage1" placeholder="Image URL 1">
+          <button type="button" class="upload-btn" onclick="triggerUpload('fileEdit1','editImage1','previewEdit1')"><i class="fas fa-camera"></i> Choose</button>
+          <img id="previewEdit1" class="img-preview" src="" alt="">
+        </div>
+        <input type="file" id="fileEdit1" accept="image/*" onchange="uploadToCloudinary(this,'editImage1','previewEdit1')">
+      </div>
+      <label>Gallery Image 2</label>
+      <div class="img-upload-group">
+        <div class="img-upload-row">
+          <input type="text" id="editImage2" placeholder="Image URL 2">
+          <button type="button" class="upload-btn" onclick="triggerUpload('fileEdit2','editImage2','previewEdit2')"><i class="fas fa-camera"></i> Choose</button>
+          <img id="previewEdit2" class="img-preview" src="" alt="">
+        </div>
+        <input type="file" id="fileEdit2" accept="image/*" onchange="uploadToCloudinary(this,'editImage2','previewEdit2')">
+      </div>
+      <label>Gallery Image 3</label>
+      <div class="img-upload-group">
+        <div class="img-upload-row">
+          <input type="text" id="editImage3" placeholder="Image URL 3">
+          <button type="button" class="upload-btn" onclick="triggerUpload('fileEdit3','editImage3','previewEdit3')"><i class="fas fa-camera"></i> Choose</button>
+          <img id="previewEdit3" class="img-preview" src="" alt="">
+        </div>
+        <input type="file" id="fileEdit3" accept="image/*" onchange="uploadToCloudinary(this,'editImage3','previewEdit3')">
+      </div>
+      <label>Gallery Image 4</label>
+      <div class="img-upload-group">
+        <div class="img-upload-row">
+          <input type="text" id="editImage4" placeholder="Image URL 4">
+          <button type="button" class="upload-btn" onclick="triggerUpload('fileEdit4','editImage4','previewEdit4')"><i class="fas fa-camera"></i> Choose</button>
+          <img id="previewEdit4" class="img-preview" src="" alt="">
+        </div>
+        <input type="file" id="fileEdit4" accept="image/*" onchange="uploadToCloudinary(this,'editImage4','previewEdit4')">
+      </div>
+      <button type="submit" class="save-btn">💾 Save Changes</button>
+    </form>
+  </div>
+</div>
+
+<script>
+const ADMIN_PASSWORD   = "nihalfayisasif";
+const SESSION_DURATION = 10 * 60 * 1000;
+const CLOUDINARY_CLOUD = "dzvv4edky";
+const CLOUDINARY_PRESET = "mvp3tf9l";
+let timerInterval = null;
+
+function checkPassword() {
+  const input = document.getElementById('adminPassInput').value;
+  const error = document.getElementById('passError');
+  const box   = document.getElementById('adminPassInput');
+  if (input === ADMIN_PASSWORD) {
+    sessionStorage.setItem('shoefinity_admin_time', Date.now().toString());
+    document.getElementById('passGate').style.display = 'none';
+    startSessionTimer();
+  } else {
+    error.style.display = 'block';
+    box.value = '';
+    box.classList.remove('shake');
+    void box.offsetWidth;
+    box.classList.add('shake');
+    box.focus();
+  }
+}
+
+function startSessionTimer() {
+  const timerBadge = document.getElementById('sessionTimer');
+  const timerCount = document.getElementById('timerCount');
+  timerBadge.style.display = 'block';
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    const unlockedAt = parseInt(sessionStorage.getItem('shoefinity_admin_time') || '0');
+    const remaining  = Math.max(0, Math.ceil((SESSION_DURATION - (Date.now() - unlockedAt)) / 1000));
+    const mins = Math.floor(remaining / 60);
+    const secs = remaining % 60;
+    timerCount.textContent = mins + ':' + String(secs).padStart(2, '0');
+    timerCount.style.color = remaining <= 30 ? '#ff6b6b' : '#00ff88';
+    if (remaining <= 0) {
+      clearInterval(timerInterval);
+      sessionStorage.removeItem('shoefinity_admin_time');
+      document.getElementById('passGate').style.display = 'flex';
+      timerBadge.style.display = 'none';
+      document.getElementById('adminPassInput').value = '';
+      document.getElementById('passError').style.display = 'none';
+    }
+  }, 1000);
+}
+
+const _savedTime = sessionStorage.getItem('shoefinity_admin_time');
+if (_savedTime && (Date.now() - parseInt(_savedTime)) < SESSION_DURATION) {
+  document.getElementById('passGate').style.display = 'none';
+  startSessionTimer();
+} else {
+  sessionStorage.removeItem('shoefinity_admin_time');
+}
+
+window.triggerUpload = function(fileInputId, urlInputId, previewId) {
+  document.getElementById(fileInputId).click();
+};
+
+async function cloudinaryUpload(file) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', CLOUDINARY_PRESET);
+  const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, { method:'POST', body:formData });
+  const result = await response.json();
+  if (result.secure_url) return result.secure_url;
+  throw new Error('Cloudinary upload failed');
+}
+
+window.uploadToCloudinary = async function(fileInput, urlInputId, previewId) {
+  const file = fileInput.files[0];
+  if (!file) return;
+  const urlInput  = document.getElementById(urlInputId);
+  const previewEl = document.getElementById(previewId);
+  const uploadBtn = fileInput.closest('.img-upload-group').querySelector('.upload-btn');
+  if (uploadBtn) { uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...'; uploadBtn.classList.add('uploading'); }
+  urlInput.value = 'Uploading...';
+  try {
+    const imageUrl = await cloudinaryUpload(file);
+    urlInput.value = imageUrl;
+    if (previewEl) { previewEl.src = imageUrl; previewEl.classList.add('visible'); }
+  } catch(err) {
+    urlInput.value = '';
+    alert('❌ Upload error: ' + err.message);
+  }
+  if (uploadBtn) { uploadBtn.innerHTML = '<i class="fas fa-camera"></i> Choose'; uploadBtn.classList.remove('uploading'); }
+};
+
+window.uploadHeroImg = async function(fileInput, urlInputId, previewId) {
+  const file = fileInput.files[0];
+  if (!file) return;
+  const urlInput  = document.getElementById(urlInputId);
+  const previewEl = document.getElementById(previewId);
+  const uploadBtn = fileInput.closest('.img-upload-group').querySelector('.upload-btn');
+  if (uploadBtn) { uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...'; uploadBtn.classList.add('uploading'); }
+  urlInput.value = 'Uploading...';
+  try {
+    const imageUrl = await cloudinaryUpload(file);
+    urlInput.value = imageUrl;
+    previewEl.src = imageUrl;
+    previewEl.classList.remove('hidden');
+  } catch(err) {
+    urlInput.value = '';
+    alert('❌ Upload error: ' + err.message);
+  }
+  if (uploadBtn) { uploadBtn.innerHTML = '<i class="fas fa-camera"></i> Choose'; uploadBtn.classList.remove('uploading'); }
+};
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import {
+  getFirestore, collection, addDoc, getDocs,
+  deleteDoc, updateDoc, doc, setDoc, getDoc, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDh2DnnTGlLb2fVsdDsTheKgkBVzJBPcJc",
+  authDomain: "shoefinity-store.firebaseapp.com",
+  projectId: "shoefinity-store",
+  storageBucket: "shoefinity-store.appspot.com",
+  messagingSenderId: "876278213787",
+  appId: "1:876278213787:web:80269ea8a13e119afbea3e"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+let allProducts = [];
+let editingId   = null;
+
+window.handleCategoryChange = function(selectId, sizeFieldId, sizeInputId, subcatFieldId, subcatInputId) {
+  const cat = document.getElementById(selectId).value;
+  const sizeField   = document.getElementById(sizeFieldId);
+  const sizeInp     = document.getElementById(sizeInputId);
+  const subcatField = document.getElementById(subcatFieldId);
+  if (cat === 'Accessories') {
+    sizeField.classList.add('hidden');
+    sizeInp.removeAttribute('required');
+    sizeInp.value = '';
+    subcatField.classList.remove('hidden');
+  } else {
+    sizeField.classList.remove('hidden');
+    sizeInp.setAttribute('required', 'required');
+    subcatField.classList.add('hidden');
+  }
+};
+
+window.switchTab = function(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active',
+      (i === 0 && tab === 'add') ||
+      (i === 1 && tab === 'manage') ||
+      (i === 2 && tab === 'hero')
+    );
+  });
+  document.getElementById('panel-add').classList.toggle('active', tab === 'add');
+  document.getElementById('panel-manage').classList.toggle('active', tab === 'manage');
+  document.getElementById('panel-hero').classList.toggle('active', tab === 'hero');
+  if (tab === 'manage') loadProducts();
+  if (tab === 'hero') loadHeroSlides();
+};
+
+document.getElementById('addProductForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = e.target.querySelector('button[type="submit"]');
+  btn.textContent = 'Adding...'; btn.disabled = true;
+  const category = document.getElementById('prodCategory').value;
+  const mainImage = document.getElementById('prodImage').value.trim();
+  if (!mainImage || mainImage === 'Uploading...') {
+    alert('⚠️ Please wait for the main image to finish uploading.');
+    btn.textContent = '✅ Add Product'; btn.disabled = false; return;
+  }
+  const galleryImages = ['prodImage1','prodImage2','prodImage3','prodImage4']
+    .map(id => document.getElementById(id).value.trim())
+    .filter(v => v && v !== 'Uploading...');
+  const originalPrice = document.getElementById('prodOriginalPrice').value;
+  const data = {
+    name: document.getElementById('prodName').value.trim(),
+    price: Number(document.getElementById('prodPrice').value),
+    originalPrice: originalPrice ? Number(originalPrice) : null,
+    description: document.getElementById('prodDescription').value.trim(),
+    category, image: mainImage, images: galleryImages, createdAt: serverTimestamp()
+  };
+  if (category === 'Accessories') {
+    data.subcategory = document.getElementById('prodSubcategory').value;
+  } else {
+    data.sizes = [document.getElementById('prodSizes').value.trim()];
+  }
+  try {
+    await addDoc(collection(db, "products"), data);
+    alert("✅ Product added successfully!");
+    e.target.reset();
+    document.querySelectorAll('#panel-add .img-preview').forEach(el => { el.src=''; el.classList.remove('visible'); });
+    document.getElementById('addSizeField').classList.remove('hidden');
+    document.getElementById('prodSizes').setAttribute('required','required');
+    document.getElementById('addSubcatField').classList.add('hidden');
+  } catch(err) { alert("❌ Error: " + err.message); }
+  btn.textContent = '✅ Add Product'; btn.disabled = false;
+});
+
+async function loadProducts() {
+  const list = document.getElementById('productList');
+  list.innerHTML = '<p class="loading">Loading products...</p>';
+  try {
+    const snapshot = await getDocs(collection(db, "products"));
+    allProducts = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+    allProducts.sort((a, b) => {
+      const aT = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+      const bT = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+      return bT - aT;
+    });
+    filterProducts();
+  } catch(err) { list.innerHTML = `<p class="empty">Error: ${err.message}</p>`; }
+}
+
+window.filterProducts = function() {
+  const cat    = document.getElementById('filterCategory').value;
+  const search = document.getElementById('filterSearch').value.toLowerCase();
+  const filtered = allProducts.filter(p => (!cat || p.category === cat) && (!search || p.name.toLowerCase().includes(search)));
+  renderList(filtered);
+};
+
+function renderList(products) {
+  const list = document.getElementById('productList');
+  if (!products.length) { list.innerHTML = '<p class="empty">No products found.</p>'; return; }
+  list.innerHTML = products.map(p => `
+    <div class="product-item" id="item-${p.id}">
+      <img src="${p.image}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/65x65/111/00ff88?text=IMG'">
+      <div class="product-item-info">
+        <h3>${p.name}</h3>
+        <p>${p.category || '—'}${p.subcategory ? ' › ' + p.subcategory : ''}</p>
+        <span>Rs. ${Number(p.price).toLocaleString('en-IN')}</span>
+        <div class="prod-id">ID: ${p.id}</div>
+      </div>
+      <div class="item-actions">
+        <button class="copy-id-btn" onclick="copyId('${p.id}')">📋 Copy ID</button>
+        <button class="edit-btn" onclick="openEdit('${p.id}')">✏️ Edit</button>
+        <button class="remove-btn" onclick="removeProduct('${p.id}')">🗑️ Remove</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.copyId = function(id) {
+  navigator.clipboard.writeText(id).then(() => {
+    alert('✅ Product ID copied!\n\nNow go to Hero Slides tab and paste it in the Product ID field.');
+  }).catch(() => {
+    prompt('Copy this product ID:', id);
+  });
+};
+
+async function loadHeroSlides() {
+  try {
+    const docSnap = await getDoc(doc(db, "settings", "hero_slides"));
+    if (docSnap.exists()) {
+      const slides = docSnap.data().slides || [];
+      const links  = docSnap.data().slide_links || [];
+      ['heroUrl1','heroUrl2','heroUrl3'].forEach((id, i) => {
+        const url = slides[i] || '';
+        document.getElementById(id).value = url;
+        const prev = document.getElementById('heroPreview' + (i+1));
+        if (url) { prev.src = url; prev.classList.remove('hidden'); }
+        else { prev.src = ''; prev.classList.add('hidden'); }
+        document.getElementById('heroLink' + (i+1)).value = links[i] || '';
+      });
+      document.getElementById('slidesStatus').textContent = '✅ Current slides loaded';
+    } else {
+      document.getElementById('slidesStatus').textContent = 'No slides saved yet — upload images and save.';
+    }
+  } catch(err) {
+    document.getElementById('slidesStatus').textContent = 'Error loading slides.';
+  }
+}
+
+window.saveHeroSlides = async function() {
+  const btn = document.querySelector('.save-slides-btn');
+  btn.textContent = 'Saving...'; btn.disabled = true;
+  const slides = ['heroUrl1','heroUrl2','heroUrl3']
+    .map(id => document.getElementById(id).value.trim())
+    .filter(v => v && v !== 'Uploading...');
+  if (slides.length === 0) {
+    alert('⚠️ Please upload at least one slide image.');
+    btn.textContent = '💾 Save Hero Slides'; btn.disabled = false; return;
+  }
+  const slide_links = [
+    document.getElementById('heroLink1').value.trim(),
+    document.getElementById('heroLink2').value.trim(),
+    document.getElementById('heroLink3').value.trim(),
+  ];
+  try {
+    await setDoc(doc(db, "settings", "hero_slides"), { slides, slide_links, updatedAt: serverTimestamp() });
+    document.getElementById('slidesStatus').textContent = '✅ Hero slides saved successfully!';
+    alert('✅ Hero slides updated! Refresh your homepage to see changes.');
+  } catch(err) { alert('❌ Error saving: ' + err.message); }
+  btn.textContent = '💾 Save Hero Slides'; btn.disabled = false;
+};
+
+window.openEdit = function(id) {
+  const p = allProducts.find(x => x.id === id);
+  if (!p) return;
+  editingId = id;
+  document.getElementById('editName').value          = p.name  || '';
+  document.getElementById('editPrice').value         = p.price || '';
+  document.getElementById('editOriginalPrice').value = p.originalPrice || '';
+  document.getElementById('editDescription').value   = p.description || '';
+  document.getElementById('editCategory').value      = p.category || 'Men';
+  document.getElementById('editImage').value         = p.image || '';
+  const mainPrev = document.getElementById('previewEditMain');
+  if (p.image) { mainPrev.src = p.image; mainPrev.classList.add('visible'); }
+  else { mainPrev.src = ''; mainPrev.classList.remove('visible'); }
+  const imgs = p.images || [];
+  ['editImage1','editImage2','editImage3','editImage4'].forEach((fId, i) => {
+    document.getElementById(fId).value = imgs[i] || '';
+    const prev = document.getElementById('previewEdit' + (i+1));
+    if (imgs[i]) { prev.src = imgs[i]; prev.classList.add('visible'); }
+    else { prev.src = ''; prev.classList.remove('visible'); }
+  });
+  const sizesRaw = p.sizes || [];
+  document.getElementById('editSizes').value = sizesRaw.length === 1 && String(sizesRaw[0]).includes(',') ? sizesRaw[0] : sizesRaw.join(',');
+  if (p.category === 'Accessories' && p.subcategory) {
+    document.getElementById('editSubcategory').value = p.subcategory;
+  }
+  handleCategoryChange('editCategory','editSizeField','editSizes','editSubcatField','editSubcategory');
+  document.getElementById('editOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+};
+
+window.closeEdit = function() {
+  document.getElementById('editOverlay').classList.remove('active');
+  document.body.style.overflow = 'auto';
+  editingId = null;
+};
+
+document.getElementById('editProductForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!editingId) return;
+  const btn = e.target.querySelector('button[type="submit"]');
+  btn.textContent = 'Saving...'; btn.disabled = true;
+  const category  = document.getElementById('editCategory').value;
+  const mainImage = document.getElementById('editImage').value.trim();
+  if (!mainImage || mainImage === 'Uploading...') {
+    alert('⚠️ Please wait for the main image to finish uploading.');
+    btn.textContent = '💾 Save Changes'; btn.disabled = false; return;
+  }
+  const galleryImages = ['editImage1','editImage2','editImage3','editImage4']
+    .map(id => document.getElementById(id).value.trim())
+    .filter(v => v && v !== 'Uploading...');
+  const originalPrice = document.getElementById('editOriginalPrice').value;
+  const updatedData = {
+    name: document.getElementById('editName').value.trim(),
+    price: Number(document.getElementById('editPrice').value),
+    originalPrice: originalPrice ? Number(originalPrice) : null,
+    description: document.getElementById('editDescription').value.trim(),
+    category, image: mainImage, images: galleryImages, updatedAt: serverTimestamp()
+  };
+  if (category === 'Accessories') {
+    updatedData.subcategory = document.getElementById('editSubcategory').value;
+    updatedData.sizes = [];
+  } else {
+    updatedData.sizes = [document.getElementById('editSizes').value.trim()];
+    updatedData.subcategory = null;
+  }
+  try {
+    await updateDoc(doc(db, "products", editingId), updatedData);
+    const idx = allProducts.findIndex(p => p.id === editingId);
+    if (idx !== -1) allProducts[idx] = { ...allProducts[idx], ...updatedData };
+    filterProducts();
+    alert("✅ Product updated!");
+    closeEdit();
+  } catch(err) { alert("❌ Error saving: " + err.message); }
+  btn.textContent = '💾 Save Changes'; btn.disabled = false;
+});
+
+window.removeProduct = async function(id) {
+  const p = allProducts.find(x => x.id === id);
+  if (!p) return;
+  if (!confirm(`Remove "${p.name}"?`)) return;
+  const btn = document.querySelector(`#item-${id} .remove-btn`);
+  if (btn) { btn.textContent = 'Removing...'; btn.disabled = true; }
+  try {
+    await deleteDoc(doc(db, "products", id));
+    allProducts = allProducts.filter(x => x.id !== id);
+    filterProducts();
+    alert(`✅ "${p.name}" removed!`);
+  } catch(err) {
+    alert("❌ Error: " + err.message);
+    if (btn) { btn.textContent = '🗑️ Remove'; btn.disabled = false; }
+  }
+};
+
+loadProducts();
+</script>
+</body>
+</html>

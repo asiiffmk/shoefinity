@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout | SHOEFINITY</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+body { background: #000000; color: white; overflow-x: hidden; }
+.container { width: 92%; max-width: 1200px; margin: auto; }
+header { padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,0.08); position: sticky; top: 0; background: #000000; z-index: 1001; }
+.nav { display: flex; justify-content: space-between; align-items: center; }
+.brand { display: flex; align-items: center; gap: 8px; text-decoration: none; color: white; position: absolute; left: 50%; transform: translateX(-50%); }
+.brand img { height: 35px; }
+.brand span { font-family: 'Poppins', sans-serif; font-weight: 700; letter-spacing: 2px; font-size: 18px; }
+.menu-toggle { display: flex; flex-direction: column; cursor: pointer; gap: 5px; z-index: 1100; }
+.menu-toggle span { width: 22px; height: 2px; background: white; transition: 0.3s ease; display: block; }
+.menu-toggle.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.menu-toggle.active span:nth-child(2) { opacity: 0; }
+.menu-toggle.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-actions { display: flex; align-items: center; gap: 15px; }
+.cart-btn-nav { background: none; border: none; color: white; font-size: 18px; cursor: pointer; text-decoration: none; }
+nav { position: fixed; top: 0; left: -100%; background: #000; width: 80%; max-width: 320px; height: 100%; min-height: 100vh; display: flex; flex-direction: column; transition: 0.4s ease; z-index: 1000; border-right: 1px solid rgba(255,255,255,0.1); overflow-y: auto; }
+nav.active { left: 0; }
+.nav-inner { display: flex; flex-direction: column; height: 100%; min-height: 100vh; padding: 90px 35px 35px 35px; }
+.menu-list { display: flex; flex-direction: column; gap: 22px; list-style: none; margin-bottom: auto; }
+.menu-list a { text-decoration: none; color: white; font-size: 16px; display: flex; align-items: center; gap: 15px; font-weight: 500; transition: 0.2s; }
+.menu-list a:hover { color: white; }
+.menu-list a::before { content: '\2022'; color: white; font-size: 20px; }
+.drawer-footer { padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: 40px; }
+.social-links { display: flex; gap: 20px; margin-bottom: 18px; align-items: center; }
+.social-links a { color: white; font-size: 20px; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; transition: 0.2s; text-decoration: none; }
+.social-links a:hover { color: #00ff88; border-color: #00ff88; background: rgba(0,255,136,0.08); }
+.footer-text { font-size: 11px; color: #555; letter-spacing: 1px; }
+.nav-mask { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); backdrop-filter: blur(5px); visibility: hidden; opacity: 0; transition: 0.4s; z-index: 999; }
+.nav-mask.active { visibility: visible; opacity: 1; }
+.page-hero { padding: 30px 0 10px; text-align: center; }
+.page-hero h1 { font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: 800; text-transform: uppercase; }
+.page-hero p { color: #666; font-size: 13px; margin-top: 5px; }
+.checkout-section { padding: 25px 0 80px; }
+.checkout-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+@media(min-width: 900px) {
+  .checkout-grid { grid-template-columns: 1.2fr 0.8fr; gap: 30px; align-items: start; }
+  .summary-box { position: sticky; top: 90px; }
+}
+.checkout-form, .summary-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 18px; padding: 25px; }
+.checkout-form h2, .summary-box h2 { font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 16px; color: white; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+.form-row { display: grid; grid-template-columns: 1fr; gap: 0; }
+@media(min-width: 600px) { .form-row { grid-template-columns: 1fr 1fr; gap: 0 14px; } }
+.form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.form-group label { font-size: 11px; text-transform: uppercase; color: #666; letter-spacing: 1px; }
+.form-group input { width: 100%; padding: 13px 15px; background: #111; border: 1px solid #222; color: white; border-radius: 10px; outline: none; font-size: 14px; font-family: 'Poppins', sans-serif; transition: 0.2s; }
+.form-group input::placeholder { color: #444; }
+.form-group input:focus { border-color: #00ff88; background: #151515; }
+.place-btn { width: 100%; padding: 15px; border: none; background: #25d366; color: white; font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.3s; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; font-family: 'Poppins', sans-serif; }
+.place-btn:hover { background: #128c7e; transform: translateY(-2px); }
+.buynow-badge { display: inline-block; background: #00ff88; color: #000; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; }
+.summary-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 12px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); gap: 10px; }
+.summary-item span:first-child { color: #aaa; flex: 1; }
+.summary-item span:last-child { color: white; font-weight: 600; flex-shrink: 0; }
+.summary-total { margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 18px; font-weight: 700; color: white; text-align: right; }
+.empty-bag { text-align: center; color: #444; padding: 20px 0; font-size: 14px; }
+footer { text-align: center; padding: 30px 0; font-size: 12px; color: #666; border-top: 1px solid rgba(255,255,255,0.08); background: #000; }
+</style>
+</head>
+<body>
+
+<div class="nav-mask" id="navMask"></div>
+
+<nav id="sideNav">
+  <div class="nav-inner">
+    <ul class="menu-list">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="men.html">Men</a></li>
+      <li><a href="women.html">Women</a></li>
+      <li><a href="accessories.html">Accessories</a></li>
+      <li><a href="contact.html">Contact Us</a></li>
+    </ul>
+    <div class="drawer-footer">
+      <div class="social-links">
+        <a href="https://instagram.com/shoefinity.co"><i class="fab fa-instagram"></i></a>
+        <a href="https://wa.me/917593001084"><i class="fab fa-whatsapp"></i></a>
+        <a href="https://www.facebook.com/share/1HzPjhMR6M/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        <a href="mailto:supportshoefinity.co@gmail.com"><i class="far fa-envelope"></i></a>
+      </div>
+      <div class="footer-text">&copy; 2026 Shoefinity Premium</div>
+    </div>
+  </div>
+</nav>
+
+<header>
+  <div class="container nav">
+    <div class="menu-toggle" id="menuBtn">
+      <span></span><span></span><span></span>
+    </div>
+    <a href="index.html" class="brand">
+      <img src="logo.png" alt="Logo">
+      <span>SHOEFiNITY</span>
+    </a>
+    <div class="nav-actions">
+      <a href="cart.html" class="cart-btn-nav"><i class="fas fa-shopping-bag"></i></a>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="container">
+    <h1>Checkout</h1>
+    <p>Finalize your order via WhatsApp</p>
+  </div>
+</section>
+
+<section class="checkout-section">
+  <div class="container">
+    <div class="checkout-grid">
+
+      <!-- SHIPPING FORM -->
+      <div class="checkout-form">
+        <h2>Shipping Details</h2>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="cust-name" placeholder="e.g. Shoefinity" required>
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" id="cust-phone" placeholder="e.g. 7593001084" pattern="[0-9]{10}" maxlength="10" inputmode="numeric" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="cust-email" placeholder="e.g. Shoefinity@gmail.com" pattern="[a-zA-Z0-9._%+\-]+@gmail\.com" title="Please enter a Gmail address (@gmail.com)" required>
+        </div>
+        <div class="form-group">
+          <label>Shipping Address</label>
+          <input type="text" id="cust-address" placeholder="Street, Landmark" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" id="cust-city" placeholder="e.g. City" required>
+          </div>
+          <div class="form-group">
+            <label>Pincode</label>
+            <input type="tel" id="cust-pin" placeholder="e.g. 673001" pattern="[0-9]{6}" maxlength="6" inputmode="numeric">
+          </div>
+        </div>
+        <button class="place-btn" onclick="placeOrder()">
+          <i class="fab fa-whatsapp"></i> Place Order on WhatsApp
+        </button>
+      </div>
+
+      <!-- ORDER SUMMARY -->
+      <div class="summary-box">
+        <h2>Order Summary</h2>
+        <div id="order-summary"></div>
+        <div class="summary-total" id="order-total"></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 Shoefinity. All Rights Reserved.</p>
+</footer>
+
+<script>
+const menuBtn  = document.getElementById('menuBtn');
+const sideNav  = document.getElementById('sideNav');
+const navMask  = document.getElementById('navMask');
+const toggleMenu = () => {
+  menuBtn.classList.toggle('active');
+  sideNav.classList.toggle('active');
+  navMask.classList.toggle('active');
+  document.body.style.overflow = sideNav.classList.contains('active') ? 'hidden' : 'auto';
+};
+menuBtn.onclick = toggleMenu;
+navMask.onclick = toggleMenu;
+
+// ── Only allow numbers in phone & pincode fields ──
+document.getElementById('cust-phone').addEventListener('input', function() {
+  this.value = this.value.replace(/[^0-9]/g, '');
+});
+document.getElementById('cust-pin').addEventListener('input', function() {
+  this.value = this.value.replace(/[^0-9]/g, '');
+});
+
+let isBuyNow = false;
+let cartItems = [];
+
+const buyNowRaw = localStorage.getItem("shoefinity_buynow");
+if (buyNowRaw) {
+  isBuyNow = true;
+  cartItems = [JSON.parse(buyNowRaw)];
+  localStorage.removeItem("shoefinity_buynow");
+} else {
+  cartItems = JSON.parse(localStorage.getItem("shoefinity_cart")) || [];
+}
+
+function loadSummary() {
+  const summary  = document.getElementById("order-summary");
+  const totalBox = document.getElementById("order-total");
+  if (cartItems.length === 0) {
+    summary.innerHTML = "<p class='empty-bag'>🛍️ Your bag is empty.</p>";
+    totalBox.innerHTML = "";
+    return;
+  }
+  let badge = isBuyNow ? `<div class="buynow-badge">⚡ Buy Now — Single Item</div>` : "";
+  let total = 0;
+  const rows = cartItems.map(item => {
+    const qty = item.qty || 1;
+    total += item.price * qty;
+    const sizeLabel = item.size ? ` · Size ${item.size}` : "";
+    return `
+      <div class="summary-item">
+        <span>${item.name}${sizeLabel} (x${qty})</span>
+        <span>Rs. ${(item.price * qty).toLocaleString('en-IN')}</span>
+      </div>
+    `;
+  }).join('');
+  summary.innerHTML = badge + rows;
+  totalBox.innerHTML = "Total: Rs. " + total.toLocaleString('en-IN');
+}
+
+function placeOrder() {
+  const name    = document.getElementById("cust-name").value.trim();
+  const phone   = document.getElementById("cust-phone").value.trim();
+  const email   = document.getElementById("cust-email").value.trim();
+  const address = document.getElementById("cust-address").value.trim();
+  const city    = document.getElementById("cust-city").value.trim();
+  const pin     = document.getElementById("cust-pin").value.trim();
+
+  if (!name || !phone || !email || !address || !city) {
+    alert("Please fill in all required shipping details.");
+    return;
+  }
+  if (!/^[0-9]{10}$/.test(phone)) {
+    alert("Please enter a valid 10-digit phone number.");
+    return;
+  }
+  if (!email.endsWith('@gmail.com')) {
+    alert("Please enter a valid Gmail address (@gmail.com only).");
+    return;
+  }
+  if (cartItems.length === 0) {
+    alert("No items to order!");
+    return;
+  }
+
+  const businessNumber = "917593001084";
+  let message = `*NEW ORDER FROM SHOEFINITY INDIA*%0A%0A`;
+  message += `*Customer Details:*%0A`;
+  message += `Name: ${name}%0A`;
+  message += `Phone: ${phone}%0A`;
+  message += `Email: ${email}%0A`;
+  message += `Address: ${address}, ${city}${pin ? ', ' + pin : ''}%0A%0A`;
+  message += `*Items Ordered:*%0A`;
+
+  let total = 0;
+  cartItems.forEach((item, index) => {
+    const qty = item.qty || 1;
+    const sizeLabel = item.size ? ` (Size: ${item.size})` : "";
+    message += `${index + 1}. ${item.name}${sizeLabel} x${qty} — Rs. ${(item.price * qty).toLocaleString('en-IN')}%0A`;
+    total += item.price * qty;
+  });
+  message += `%0A*TOTAL AMOUNT: Rs. ${total.toLocaleString('en-IN')}*`;
+
+  window.open(`https://wa.me/${businessNumber}?text=${message}`, '_blank');
+
+  if (!isBuyNow) localStorage.removeItem("shoefinity_cart");
+  window.location.href = "success.html";
+}
+
+loadSummary();
+</script>
+</body>
+</html>

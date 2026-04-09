@@ -1,0 +1,302 @@
+/* ============================= */
+/* Base Styles */
+/* ============================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background: #0f2f1f;
+  color: white;
+}
+
+/* Container */
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* ============================= */
+/* Navbar */
+/* ============================= */
+
+header {
+  padding: 25px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(6px);
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand img {
+  height: 40px;
+}
+
+.brand span {
+  font-weight: 600;
+  letter-spacing: 2px;
+}
+
+/* Nav Links */
+nav {
+  display: flex;
+  align-items: center;
+}
+
+nav a {
+  margin-left: 30px;
+  text-decoration: none;
+  color: white;
+  font-size: 14px;
+  letter-spacing: 1px;
+  position: relative;
+  transition: 0.3s;
+}
+
+nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 0;
+  height: 1px;
+  background: white;
+  transition: 0.3s;
+}
+
+nav a:hover::after {
+  width: 100%;
+}
+
+.cart {
+  margin-left: 30px;
+  font-weight: bold;
+}
+
+/* ============================= */
+/* Hero */
+/* ============================= */
+
+.hero {
+  height: 85vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 58px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.hero p {
+  color: #d8d8d8;
+  margin-bottom: 35px;
+  font-size: 16px;
+}
+
+/* Button */
+.btn {
+  padding: 14px 40px;
+  border: 1px solid white;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 1px;
+}
+
+.btn:hover {
+  background: white;
+  color: #0f2f1f;
+  transform: translateY(-3px);
+}
+
+/* ============================= */
+/* Why Section */
+/* ============================= */
+
+.why-section {
+  padding: 100px 0;
+  text-align: center;
+}
+
+.why-title {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.why-sub {
+  color: #cfcfcf;
+  margin-bottom: 60px;
+}
+
+.why-grid {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.why-card {
+  flex: 1;
+  background: rgba(22, 61, 41, 0.8);
+  padding: 50px 40px;
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.why-card:hover {
+  transform: translateY(-10px);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.why-card h3 {
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+
+/* ============================= */
+/* Footer */
+/* ============================= */
+
+footer {
+  text-align: center;
+  padding: 40px 0;
+  font-size: 14px;
+  color: #888;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  margin-top: 80px;
+}
+
+/* ============================= */
+/* Hamburger */
+/* ============================= */
+
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 6px;
+}
+
+.menu-toggle span {
+  width: 25px;
+  height: 2px;
+  background: white;
+  transition: 0.3s ease;
+}
+
+.menu-toggle.active span:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.menu-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-toggle.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(6px, -6px);
+}
+
+/* ============================= */
+/* Responsive Design */
+/* ============================= */
+
+@media (max-width: 1024px) {
+
+  .why-grid {
+    flex-direction: column;
+  }
+
+}
+
+@media (max-width: 768px) {
+
+  .nav {
+    flex-direction: row;
+  }
+
+  .menu-toggle {
+    display: flex;
+  }
+
+  nav {
+    position: absolute;
+    top: 80px;
+    right: 0;
+    background: #0f2f1f;
+    width: 100%;
+    display: none;
+    flex-direction: column;
+    text-align: center;
+    padding: 20px 0;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  nav a,
+  .cart {
+    margin: 15px 0;
+  }
+
+  nav.active {
+    display: flex;
+  }
+
+  .hero {
+    height: auto;
+    padding: 80px 20px;
+  }
+
+  .hero h1 {
+    font-size: 38px;
+  }
+
+  .hero p {
+    font-size: 14px;
+  }
+
+  .why-section {
+    padding: 60px 20px;
+  }
+
+  .why-card {
+    padding: 30px;
+  }
+
+}
+
+@media (max-width: 480px) {
+
+  .hero h1 {
+    font-size: 30px;
+  }
+
+  .btn {
+    padding: 12px 25px;
+  }
+
+  .why-title {
+    font-size: 28px;
+  }
+
+}

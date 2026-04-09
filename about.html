@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About | Shoefinity</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+<style>
+
+/* ===== RESET ===== */
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins', sans-serif;
+}
+
+/* ===== BODY BACKGROUND ===== */
+body{
+  background: linear-gradient(90deg, #062d1a, #0b3d24);
+  color:#ffffff;
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* ================= NAVBAR (Exact Match to Index) ================= */
+header {
+  padding: 25px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  position: relative;
+  z-index: 1001;
+}
+
+.nav-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: white;
+}
+
+.brand img {
+  height: 40px;
+  width: auto;
+}
+
+.brand span {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+}
+
+nav a {
+  margin-left: 30px;
+  text-decoration: none;
+  color: white;
+  font-size: 14px;
+  position: relative;
+  transition: 0.3s ease;
+}
+
+nav a::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: white;
+  transition: 0.3s ease;
+}
+
+nav a:hover::after {
+  width: 100%;
+}
+
+.cart {
+  margin-left: 30px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  color: white;
+}
+
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 6px;
+  z-index: 1100;
+}
+
+.menu-toggle span {
+  width: 25px;
+  height: 2px;
+  background: white;
+  transition: 0.3s ease;
+}
+
+/* X BUTTON ANIMATION */
+.menu-toggle.active span:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.menu-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-toggle.active span:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+/* ===== PAGE CONTENT ===== */
+.section{
+  padding:120px 8%;
+  text-align:center;
+}
+
+.section h1{
+  font-family: 'Playfair Display', serif;
+  font-size:42px;
+  font-weight:700;
+  margin-bottom:20px;
+}
+
+.section p{
+  font-size:18px;
+  max-width:700px;
+  margin:auto;
+  line-height:1.7;
+  color:#dcdcdc;
+}
+
+/* ===== FOOTER ===== */
+footer{
+  padding:25px;
+  text-align:center;
+  background:#052b19;
+  color:#bdbdbd;
+  font-size:14px;
+  margin-top:170px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+/* ================= MOBILE UPDATED (Matched to Index) ================= */
+@media(max-width:768px){
+  .menu-toggle {
+    display: flex;
+  }
+
+  nav {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    background: #0f2f1f;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: 0.4s ease-in-out;
+    z-index: 1000;
+  }
+
+  nav.active {
+    right: 0;
+  }
+
+  nav a {
+    margin: 25px 0;
+    font-size: 24px;
+    margin-left: 0;
+  }
+
+  .cart {
+    margin-left: 0;
+    margin-top: 20px;
+    font-size: 24px;
+  }
+
+  .section h1{
+    font-size:32px;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="container nav-wrapper">
+    <a href="index.html" class="brand">
+      <img src="logo.png" alt="Shoefinity Logo">
+      <span>SHOEFINITY</span>
+    </a>
+
+    <div class="menu-toggle" id="menu-toggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <nav id="nav-links">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="cart.html" class="cart">
+        🛒 <span id="cart-count">0</span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<section class="section">
+  <h1>About Shoefinity</h1>
+  <p>
+    Shoefinity represents endless comfort and premium footwear design.
+    Built with a vision to combine luxury aesthetics with modern performance,
+    our brand stands for confidence, elegance, and innovation.
+  </p>
+</section>
+
+<footer>
+  © 2026 Shoefinity. All Rights Reserved.
+</footer>
+
+<script>
+// Toggle Logic
+const toggle = document.getElementById("menu-toggle");
+const nav = document.getElementById("nav-links");
+const links = document.querySelectorAll("nav a");
+
+toggle.addEventListener("click", () => {
+  toggle.classList.toggle("active");
+  nav.classList.toggle("active");
+  
+  if(nav.classList.contains("active")) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "auto";
+  }
+});
+
+links.forEach(link => {
+  link.addEventListener("click", () => {
+    toggle.classList.remove("active");
+    nav.classList.remove("active");
+    document.body.style.overflow = "auto";
+  });
+});
+
+// Update Cart Count
+function updateCartCount() {
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const countEl = document.getElementById("cart-count");
+  if(countEl) countEl.innerText = cart.length;
+}
+updateCartCount();
+</script>
+
+</body>
+</html>
